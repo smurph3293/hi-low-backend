@@ -1,0 +1,7 @@
+.env.sample
+.gitignore
+event.json
+event.json.sample
+packge-lock.json
+README.md
+node_modules/**/*
