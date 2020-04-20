@@ -22,7 +22,7 @@
         <aws.sdk.version>2.0.0-preview-11</aws.sdk.version>
         <dynamodblocal.version>1.11.119</dynamodblocal.version>
         <lombok.version>1.18.12</lombok.version>
-        <dagger.version>2.16</dagger.version>
+        <dagger.version>2.26</dagger.version>
         <junit.version>4.12</junit.version>
         <mockito.version>2.0.2-beta</mockito.version>
         <maven.shade.plugin.version>3.2.2</maven.shade.plugin.version>

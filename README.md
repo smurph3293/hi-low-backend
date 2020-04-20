@@ -1,56 +1,6 @@
-# SAM DynamoDB Application for Managing Orders
+# SAM DynamoDB Application for Managing Bets
 
-This is a sample application to demonstrate how to build an application on DynamoDB using the
-DynamoDBMapper ORM framework to map Order items in a DynamoDB table to a RESTful API for order
-management.
-
-```bash
-.
-├── README.md                               <-- This instructions file
-├── LICENSE.txt                             <-- Apache Software License 2.0
-├── NOTICE.txt                              <-- Copyright notices
-├── pom.xml                                 <-- Java dependencies, Docker integration test orchestration
-├── src
-│   ├── main
-│   │   └── java
-│   │       ├── com.amazonaws.config              <-- Classes to manage Dagger 2 dependency injection
-│   │       │   ├── OrderComponent.java           <-- Contains inject methods for handler entrypoints
-│   │       │   └── OrderModule.java              <-- Provides dependencies like the DynamoDB client for injection
-│   │       ├── com.amazonaws.dao                 <-- Package for DAO objects
-│   │       │   └── OrderDao.java                 <-- DAO Wrapper around the DynamoDBTableMapper for Orders
-│   │       ├── com.amazonaws.exception           <-- Source code for custom exceptions
-│   │       ├── com.amazonaws.handler             <-- Source code for lambda functions
-│   │       │   ├── CreateOrderHandler.java       <-- Lambda function code for creating orders
-│   │       │   ├── CreateOrdersTableHandler.java <-- Lambda function code for creating the orders table
-│   │       │   ├── DeleteOrderHandler.java       <-- Lambda function code for deleting orders
-│   │       │   ├── GetOrderHandler.java          <-- Lambda function code for getting one order
-│   │       │   ├── GetOrdersHandler.java         <-- Lambda function code for getting a page of orders
-│   │       │   └── UpdateOrderHandler.java       <-- Lambda function code for updating an order
-│   │       └── com.amazonaws.model               <-- Source code for model classes
-│   │           ├── request                       <-- Source code for request model classes
-│   │           │   ├── CreateOrderRequest.java      <-- POJO shape for creating an order
-│   │           │   ├── GetOrDeleteOrderRequest.java <-- POJO shape for getting or deleting an order
-│   │           │   ├── GetOrdersRequest.java        <-- POJO shape for getting a page of orders
-│   │           │   └── UpdateOrderRequest.java      <-- POJO shape for updating an order
-│   │           ├── response                      <-- Source code for response model classes
-│   │           │   ├── GatewayResponse.java         <-- Generic POJO shape for the APIGateway integration
-│   │           │   └── GetOrdersResponse.java       <-- POJO shape for a page of orders
-│   │           └── Order.java                    <-- POJO for Order resources
-│   └── test                                      <-- Unit and integration tests
-│       └── java
-│           ├── com.amazonaws.config              <-- Classes to manage Dagger 2 dependency injection
-│           ├── com.amazonaws.dao                 <-- Tests for OrderDao
-│           ├── com.amazonaws.handler             <-- Unit and integration tests for handlers
-│           │   ├── CreateOrderHandlerIT.java     <-- Integration tests for creating orders
-│           │   ├── CreateOrderHandlerTest.java   <-- Unit tests for creating orders
-│           │   ├── DeleteOrderHandlerTest.java   <-- Unit tests for deleting orders
-│           │   ├── GetOrderHandlerTest.java      <-- Unit tests for getting one order
-│           │   ├── GetOrdersHandlerTest.java     <-- Unit tests for getting a page of orders
-│           │   └── UpdateOrderHandlerTest.java   <-- Unit tests for updating an order
-│           └── com.amazonaws.services.lambda.runtime <-- Unit and integration tests for handlers
-│               └── TestContext.java              <-- Context implementation for use in tests
-└── template.yaml                                 <-- Contains SAM API Gateway + Lambda definitions
-```
+This is an application for creating and managing bets among friends.
 
 ## Requirements
 

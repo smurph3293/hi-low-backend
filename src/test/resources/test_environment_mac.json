@@ -1,22 +1,22 @@
 {
-    "GetOrderFunction": {
+    "GetBetFunction": {
         "ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "bets_table"
     },
-    "GetOrdersFunction": {
+    "GetBetsFunction": {
         "ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "bets_table"
     },
-    "UpdateOrderFunction": {
+    "UpdateBetFunction": {
         "ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "bets_table"
     },
-    "DeleteOrderFunction": {
+    "DeleteBetFunction": {
         "ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "bets_table"
     },
-    "CreateOrderFunction": {
+    "CreateBetFunction": {
         "ENDPOINT_OVERRIDE": "http://docker.for.mac.localhost:8000",
-        "TABLE_NAME": "orders_table"
+        "TABLE_NAME": "bets_table"
     }
 }

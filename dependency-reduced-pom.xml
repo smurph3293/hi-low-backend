@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.amazonaws</groupId>
   <artifactId>aws-sam-java-rest</artifactId>
-  <name>A sample REST application built on SAM and DynamoDB</name>
+  <name>A REST application built on SAM</name>
   <version>1.0.0</version>
   <developers>
     <developer>
@@ -337,7 +337,7 @@
     <docker.maven.plugin.version>0.26.1</docker.maven.plugin.version>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
-    <dagger.version>2.16</dagger.version>
+    <dagger.version>2.26</dagger.version>
     <junit.version>4.12</junit.version>
     <findbugs.maven.plugin.version>3.0.5</findbugs.maven.plugin.version>
     <maven.enforcer.plugin.version>3.0.0-M2</maven.enforcer.plugin.version>

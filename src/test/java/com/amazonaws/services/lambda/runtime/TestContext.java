@@ -19,7 +19,6 @@ package com.amazonaws.services.lambda.runtime;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.AllArgsConstructor;
 
 @Getter
 @Builder(toBuilder = true)

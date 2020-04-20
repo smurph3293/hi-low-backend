@@ -1,27 +1,10 @@
-/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package com.amazonaws.config;
 
-import com.amazonaws.handler.CreateOrderHandler;
-import com.amazonaws.handler.DeleteOrderHandler;
-import com.amazonaws.handler.GetOrderHandler;
-import com.amazonaws.handler.GetOrdersHandler;
-import com.amazonaws.handler.UpdateOrderHandler;
+import com.amazonaws.handler.CreateBetHandler;
+import com.amazonaws.handler.DeleteBetHandler;
+import com.amazonaws.handler.GetBetHandler;
+import com.amazonaws.handler.GetBetsHandler;
+import com.amazonaws.handler.UpdateBetHandler;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -30,13 +13,13 @@ import javax.inject.Singleton;
 @Component(modules = {OrderModule.class})
 public interface OrderComponent {
 
-    void inject(CreateOrderHandler requestHandler);
+    void inject(CreateBetHandler requestHandler);
 
-    void inject(DeleteOrderHandler requestHandler);
+    void inject(DeleteBetHandler requestHandler);
 
-    void inject(GetOrderHandler requestHandler);
+    void inject(GetBetHandler requestHandler);
 
-    void inject(GetOrdersHandler requestHandler);
+    void inject(GetBetsHandler requestHandler);
 
-    void inject(UpdateOrderHandler requestHandler);
+    void inject(UpdateBetHandler requestHandler);
 }

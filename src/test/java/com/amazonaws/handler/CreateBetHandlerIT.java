@@ -1,20 +1,3 @@
-/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package com.amazonaws.handler;
 
 import static org.junit.Assert.assertEquals;
@@ -32,12 +15,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class CreateOrderHandlerIT extends OrderHandlerTestBase {
+public class CreateBetHandlerIT extends OrderHandlerTestBase {
 
-    private CreateOrderHandler sut = new CreateOrderHandler();
-    private GetOrderHandler getOrder = new GetOrderHandler();
-    private GetOrdersHandler getOrders = new GetOrdersHandler();
-    private UpdateOrderHandler updateOrder = new UpdateOrderHandler();
+    private CreateBetHandler sut = new CreateBetHandler();
+    private GetBetHandler getOrder = new GetBetHandler();
+    private GetBetsHandler getBets = new GetBetsHandler();
+    private UpdateBetHandler updateOrder = new UpdateBetHandler();
 
     @Test
     public void handleRequest_whenCreateOrderInputStreamOk_puts200InOutputStream() throws IOException {
@@ -85,7 +68,7 @@ public class CreateOrderHandlerIT extends OrderHandlerTestBase {
 
         //now that we can get the singleton lets see if we can get it in a page
         os = new ByteArrayOutputStream();
-        getOrders.handleRequest(new ByteArrayInputStream("{}".getBytes()), os, ctxt);
+        getBets.handleRequest(new ByteArrayInputStream("{}".getBytes()), os, ctxt);
         assertTrue(os.toString().contains(orderId));
 
         //update the order with invalid arguments (try to change the version from 1 to 2 and the preTaxAmount from 3 to 4)
