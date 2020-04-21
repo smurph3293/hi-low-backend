@@ -25,26 +25,26 @@ mvn package
 
 **Invoking function locally through local API Gateway**
 1. Start DynamoDB Local in a Docker container. `docker run -p 8000:8000 amazon/dynamodb-local`
-2. Create the DynamoDB table. `aws dynamodb create-table --table-name orders_table --attribute-definitions AttributeName=orderId,AttributeType=S --key-schema AttributeName=orderId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
+2. Create the DynamoDB table. `aws dynamodb create-table --table-name bets_table --attribute-definitions AttributeName=betId,AttributeType=S --key-schema AttributeName=betId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
 3. Start the SAM local API.
  - On a Mac: `sam local start-api --env-vars src/test/resources/test_environment_mac.json`
  - On Windows: `sam local start-api --env-vars src/test/resources/test_environment_windows.json`
  - On Linux: `sam local start-api --env-vars src/test/resources/test_environment_linux.json`
 
 If the previous command ran successfully you should now be able to hit the following local endpoint to
-invoke the functions rooted at `http://localhost:3000/orders`
+invoke the functions rooted at `http://localhost:3000/bets`
 
 **SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to
 understand how to bootstrap this environment (runtime, where the source code is, etc.) - The
-following excerpt is what the CLI will read in order to initialize an API and its routes:
+following excerpt is what the CLI will read in bet to initialize an API and its routes:
 
 ```yaml
 ...
 Events:
-    GetOrders:
+    GetBets:
         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
         Properties:
-            Path: /orders
+            Path: /bets
             Method: get
 ```
 
@@ -56,11 +56,11 @@ dependencies:
 
 ```yaml
 ...
-    GetOrdersFunction:
+    GetBetsFunction:
         Type: AWS::Serverless::Function
         Properties:
             CodeUri: target/aws-sam-java-rest-1.0.0.jar
-            Handler: com.amazonaws.handler.GetOrdersHandler::handleRequest
+            Handler: com.amazonaws.handler.GetBetsHandler::handleRequest
 ```
 
 Firstly, we need a `S3 bucket` where we can upload our Lambda functions packaged as ZIP before we
@@ -86,7 +86,7 @@ Next, the following command will create a Cloudformation Stack and deploy your S
 ```bash
 sam deploy \
     --template-file packaged.yaml \
-    --stack-name sam-orderHandler \
+    --stack-name sam-betHandler \
     --capabilities CAPABILITY_IAM
 ```
 
@@ -96,7 +96,7 @@ After deployment is complete you can run the following command to retrieve the A
 
 ```bash
 aws cloudformation describe-stacks \
-    --stack-name sam-orderHandler \
+    --stack-name sam-betHandler \
     --query 'Stacks[].Outputs'
 ```
 
@@ -104,7 +104,7 @@ aws cloudformation describe-stacks \
 
 ### Running unit tests
 We use `JUnit` for testing our code.
-Unit tests in this sample package mock out the DynamoDBTableMapper class for Order objects.
+Unit tests in this sample package mock out the DynamoDBTableMapper class for Bet objects.
 Unit tests do not require connectivity to a DynamoDB endpoint. You can run unit tests with the
 following command:
 
@@ -129,7 +129,7 @@ pip3 install requests
 python3 src/test/resources/api_tests.py 3
 ```
 
-The number that follows the test script name is the number of orders to create in the
+The number that follows the test script name is the number of bets to create in the
 test. For these tests to work, you must follow the steps for [local development](#local-development).  
 
 # Appendix
@@ -146,12 +146,12 @@ sam package \
 
 sam deploy \
     --template-file packaged.yaml \
-    --stack-name sam-orderHandler \
+    --stack-name sam-betHandler \
     --capabilities CAPABILITY_IAM \
     --parameter-overrides MyParameterSample=MySampleValue
 
 aws cloudformation describe-stacks \
-    --stack-name sam-orderHandler --query 'Stacks[].Outputs'
+    --stack-name sam-betHandler --query 'Stacks[].Outputs'
 ```
 
 ## Bringing to the next level

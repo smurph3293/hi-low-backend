@@ -1,18 +1,3 @@
-/*
- * Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *
- *  http://aws.amazon.com/apache2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-
 package com.amazonaws.handler;
 
 import com.amazonaws.model.response.ErrorMessage;
@@ -26,7 +11,7 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Map;
 
-public interface OrderRequestStreamHandler extends RequestStreamHandler {
+public interface BetRequestStreamHandler extends RequestStreamHandler {
     int SC_OK = 200;
     int SC_CREATED = 201;
     int SC_BAD_REQUEST = 400;
@@ -37,8 +22,8 @@ public interface OrderRequestStreamHandler extends RequestStreamHandler {
             "application/json");
     ErrorMessage REQUEST_WAS_NULL_ERROR
             = new ErrorMessage("Request was null", SC_BAD_REQUEST);
-    ErrorMessage ORDER_ID_WAS_NOT_SET
-            = new ErrorMessage("order_id was not set", SC_NOT_FOUND);
+    ErrorMessage BET_ID_WAS_NOT_SET
+            = new ErrorMessage("bet_id was not set", SC_NOT_FOUND);
 
     /**
      * This method writes a body has invalid JSON response.

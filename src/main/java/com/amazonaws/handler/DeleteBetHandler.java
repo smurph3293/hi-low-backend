@@ -1,9 +1,9 @@
 package com.amazonaws.handler;
 
-import com.amazonaws.config.DaggerOrderComponent;
-import com.amazonaws.config.OrderComponent;
-import com.amazonaws.dao.OrderDao;
-import com.amazonaws.exception.OrderDoesNotExistException;
+import com.amazonaws.config.BetComponent;
+import com.amazonaws.config.DaggerBetComponent;
+import com.amazonaws.dao.BetDao;
+import com.amazonaws.exception.BetDoesNotExistException;
 import com.amazonaws.exception.UnableToDeleteException;
 import com.amazonaws.model.response.ErrorMessage;
 import com.amazonaws.model.response.GatewayResponse;
@@ -18,16 +18,16 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-public class DeleteBetHandler implements OrderRequestStreamHandler {
+public class DeleteBetHandler implements BetRequestStreamHandler {
     @Inject
     ObjectMapper objectMapper;
     @Inject
-    OrderDao orderDao;
-    private final OrderComponent orderComponent;
+    BetDao betDao;
+    private final BetComponent betComponent;
 
     public DeleteBetHandler() {
-        orderComponent = DaggerOrderComponent.builder().build();
-        orderComponent.inject(this);
+        betComponent = DaggerBetComponent.builder().build();
+        betComponent.inject(this);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class DeleteBetHandler implements OrderRequestStreamHandler {
         }
 
         final JsonNode pathParameterMap = event.findValue("pathParameters");
-        final String orderId = Optional.ofNullable(pathParameterMap)
-                .map(mapNode -> mapNode.get("order_id"))
+        final String betId = Optional.ofNullable(pathParameterMap)
+                .map(mapNode -> mapNode.get("bet_id"))
                 .map(JsonNode::asText)
                 .orElse(null);
 
-        if (isNullOrEmpty(orderId)) {
+        if (isNullOrEmpty(betId)) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
-                            objectMapper.writeValueAsString(ORDER_ID_WAS_NOT_SET),
+                            objectMapper.writeValueAsString(BET_ID_WAS_NOT_SET),
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
         try {
             objectMapper.writeValue(output, new GatewayResponse<>(
-                    objectMapper.writeValueAsString(orderDao.deleteOrder(orderId)),
+                    objectMapper.writeValueAsString(betDao.deleteBet(betId)),
                     APPLICATION_JSON, SC_OK));
-        } catch (OrderDoesNotExistException e) {
+        } catch (BetDoesNotExistException e) {
             objectMapper.writeValue(output, new GatewayResponse<>(
                     objectMapper.writeValueAsString(new ErrorMessage(e.getMessage(),
                             SC_NOT_FOUND)),

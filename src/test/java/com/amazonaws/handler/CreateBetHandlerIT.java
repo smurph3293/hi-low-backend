@@ -15,15 +15,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class CreateBetHandlerIT extends OrderHandlerTestBase {
+public class CreateBetHandlerIT extends BetHandlerTestBase {
 
     private CreateBetHandler sut = new CreateBetHandler();
-    private GetBetHandler getOrder = new GetBetHandler();
+    private GetBetHandler getBet = new GetBetHandler();
     private GetBetsHandler getBets = new GetBetsHandler();
-    private UpdateBetHandler updateOrder = new UpdateBetHandler();
+    private UpdateBetHandler updateBet = new UpdateBetHandler();
 
     @Test
-    public void handleRequest_whenCreateOrderInputStreamOk_puts200InOutputStream() throws IOException {
+    public void handleRequest_whenCreateBetInputStreamOk_puts200InOutputStream() throws IOException {
         Context ctxt = TestContext.builder().build();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
@@ -43,13 +43,13 @@ public class CreateBetHandlerIT extends OrderHandlerTestBase {
         String bodyString = outputWrapper.getString("body");
         assertNotNull(bodyString);
         Item body = Item.fromJSON(bodyString);
-        verifyOrderItem(body, 1, "3");
+        verifyBetItem(body, 1, "3");
 
-        //now that we verified the created order, lets see if we can get it anew
+        //now that we verified the created bet, lets see if we can get it anew
         os = new ByteArrayOutputStream();
-        String orderId = body.getString("orderId");
+        String betId = body.getString("betId");
 
-        getOrder.handleRequest(new ByteArrayInputStream(("{\"pathParameters\": { \"order_id\": \"" + orderId + "\"}}").getBytes()), os, ctxt);
+        getBet.handleRequest(new ByteArrayInputStream(("{\"pathParameters\": { \"bet_id\": \"" + betId + "\"}}").getBytes()), os, ctxt);
 
         outputWrapper = Item.fromJSON(os.toString());
         assertTrue(outputWrapper.hasAttribute("headers"));
@@ -64,25 +64,25 @@ public class CreateBetHandlerIT extends OrderHandlerTestBase {
         bodyString = outputWrapper.getString("body");
         assertNotNull(bodyString);
         body = Item.fromJSON(bodyString);
-        verifyOrderItem(body, 1, "3");
+        verifyBetItem(body, 1, "3");
 
         //now that we can get the singleton lets see if we can get it in a page
         os = new ByteArrayOutputStream();
         getBets.handleRequest(new ByteArrayInputStream("{}".getBytes()), os, ctxt);
-        assertTrue(os.toString().contains(orderId));
+        assertTrue(os.toString().contains(betId));
 
-        //update the order with invalid arguments (try to change the version from 1 to 2 and the preTaxAmount from 3 to 4)
+        //update the bet with invalid arguments (try to change the version from 1 to 2 and the preTaxAmount from 3 to 4)
         os = new ByteArrayOutputStream();
-        updateOrder.handleRequest(
-                new ByteArrayInputStream(("{\"pathParameters\": { \"order_id\": \"" + orderId + "\"}, "
+        updateBet.handleRequest(
+                new ByteArrayInputStream(("{\"pathParameters\": { \"bet_id\": \"" + betId + "\"}, "
                         + "\"body\": \"{\\\"customerId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 4, \\\"postTaxAmount\\\": 10, \\\"version\\\": 2}\"}").getBytes()),
                 os, ctxt);
         assertTrue(os.toString().contains("409")); //SC_CONFLICT
 
-        //update the order with invalid arguments (try to change the pretax amount from 3 to 4)
+        //update the bet with invalid arguments (try to change the pretax amount from 3 to 4)
         os = new ByteArrayOutputStream();
-        updateOrder.handleRequest(
-                new ByteArrayInputStream(("{\"pathParameters\": { \"order_id\": \"" + orderId + "\"}, "
+        updateBet.handleRequest(
+                new ByteArrayInputStream(("{\"pathParameters\": { \"bet_id\": \"" + betId + "\"}, "
                         + "\"body\": \"{\\\"customerId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 4, \\\"postTaxAmount\\\": 10, \\\"version\\\": 1}\"}").getBytes()),
                 os, ctxt);
         outputWrapper = Item.fromJSON(os.toString());
@@ -98,16 +98,16 @@ public class CreateBetHandlerIT extends OrderHandlerTestBase {
         bodyString = outputWrapper.getString("body");
         assertNotNull(bodyString);
         body = Item.fromJSON(bodyString);
-        verifyOrderItem(body, 2, "4");
+        verifyBetItem(body, 2, "4");
 
         assertTrue(os.toString().contains("200")); //SC_OK
     }
 
-    private void verifyOrderItem(Item body, long expectedVersion, String expectedPreTaxAmount) {
-        assertTrue(body.hasAttribute("orderId"));
-        String orderId = body.getString("orderId");
-        assertNotNull(orderId);
-        assertTrue(orderId.contains("-"));
+    private void verifyBetItem(Item body, long expectedVersion, String expectedPreTaxAmount) {
+        assertTrue(body.hasAttribute("betId"));
+        String betId = body.getString("betId");
+        assertNotNull(betId);
+        assertTrue(betId.contains("-"));
         assertTrue(body.hasAttribute("customerId"));
         String customerId = body.getString("customerId");
         assertEquals("foo", customerId);

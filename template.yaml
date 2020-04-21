@@ -42,7 +42,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       EndpointConfiguration: REGIONAL
-      StageName: orders
+      StageName: bets
       TracingEnabled: true
       Auth:
         DefaultAuthorizer: GatewayAuthorizer
@@ -96,11 +96,11 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: !Ref BetsTable
       Events:
-        GetOrder:
+        GetBet:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /orders/{order_id}
+            Path: /bets/{bet_id}
             Method: get
   GetBetsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -113,11 +113,11 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: !Ref BetsTable
       Events:
-        GetOrders:
+        GetBets:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /orders
+            Path: /bets
             Method: get
   UpdateBetFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -130,11 +130,11 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref BetsTable
       Events:
-        UpdateOrder:
+        UpdateBet:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /orders/{order_id}
+            Path: /bets/{bet_id}
             Method: post
   DeleteBetFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -147,11 +147,11 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref BetsTable
       Events:
-        DeleteOrder:
+        DeleteBet:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /orders/{order_id}
+            Path: /bets/{bet_id}
             Method: delete
   CreateBetFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -164,11 +164,11 @@ Resources:
         - DynamoDBCrudPolicy:
             TableName: !Ref BetsTable
       Events:
-        CreateOrder:
+        CreateBet:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /orders
+            Path: /bets
             Method: post
 
   BetsTable:
@@ -189,21 +189,21 @@ Outputs:
       Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
 
     GetBetFunction:
-      Description: "GetOrder Lambda Function ARN"
+      Description: "GetBet Lambda Function ARN"
       Value: !GetAtt GetBetFunction.Arn
 
     GetBetsFunction:
-      Description: "GetOrders Lambda Function ARN"
+      Description: "GetBets Lambda Function ARN"
       Value: !GetAtt GetBetsFunction.Arn
 
     UpdateBetFunction:
-      Description: "UpdateOrder Lambda Function ARN"
+      Description: "UpdateBet Lambda Function ARN"
       Value: !GetAtt UpdateBetFunction.Arn
 
     DeleteBetFunction:
-      Description: "DeleteOrder Lambda Function ARN"
+      Description: "DeleteBet Lambda Function ARN"
       Value: !GetAtt DeleteBetFunction.Arn
 
     CreateBetFunction:
-      Description: "CreateOrder Lambda Function ARN"
+      Description: "CreateBet Lambda Function ARN"
       Value: !GetAtt CreateBetFunction.Arn

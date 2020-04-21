@@ -13,7 +13,7 @@ public class UpdateBetHandlerTest {
     private UpdateBetHandler sut = new UpdateBetHandler();
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamEmpty_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamEmpty_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         sut.handleRequest(new ByteArrayInputStream(new byte[0]), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Invalid JSON"));
@@ -21,63 +21,63 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamHasNoMappedOrderIdPathParam_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamHasNoMappedBetIdPathParam_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { }}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
-        assertTrue(os.toString().contains("order_id was not set"));
+        assertTrue(os.toString().contains("bet_id was not set"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamHasNoBody_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamHasNoBody_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"order_id\" : \"a\" }}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Body was null"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamHasNullBody_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamHasNullBody_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"order_id\" : \"a\" }, \"body\": \"null\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"null\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Request was null"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamHasWrongTypeForBody_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamHasWrongTypeForBody_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"order_id\" : \"a\" }, \"body\": \"1\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"1\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Invalid JSON"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamHasEmptyBodyDict_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamHasEmptyBodyDict_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"order_id\" : \"a\" }, \"body\": \"{}\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("customerId was null"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamOnlyHasCustomer_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamOnlyHasCustomer_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"order_id\" : \"a\" }, \"body\": \"{\\\"customerId\\\": \\\"customer\\\"}\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"customerId\\\": \\\"customer\\\"}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("preTaxAmount was null"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
-    public void handleRequest_whenUpdateOrderInputStreamDoesNotHavePostTaxAmount_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenUpdateBetInputStreamDoesNotHavePostTaxAmount_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"order_id\" : \"a\" }, \"body\": \"{\\\"customerId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"customerId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("postTaxAmount was null"));
         assertTrue(os.toString().contains("400"));

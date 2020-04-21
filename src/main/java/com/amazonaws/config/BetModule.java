@@ -1,6 +1,6 @@
 package com.amazonaws.config;
 
-import com.amazonaws.dao.OrderDao;
+import com.amazonaws.dao.BetDao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dagger.Module;
@@ -15,7 +15,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Module
-public class OrderModule {
+public class BetModule {
     @Singleton
     @Provides
     @Named("tableName")
@@ -45,7 +45,7 @@ public class OrderModule {
 
     @Singleton
     @Provides
-    public OrderDao orderDao(DynamoDbClient dynamoDb, @Named("tableName") String tableName) {
-        return new OrderDao(dynamoDb, tableName,10);
+    public BetDao betDao(DynamoDbClient dynamoDb, @Named("tableName") String tableName) {
+        return new BetDao(dynamoDb, tableName,10);
     }
 }

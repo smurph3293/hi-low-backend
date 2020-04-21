@@ -1,11 +1,11 @@
 package com.amazonaws.handler;
 
-import com.amazonaws.config.DaggerOrderComponent;
-import com.amazonaws.config.OrderComponent;
-import com.amazonaws.dao.OrderDao;
-import com.amazonaws.exception.CouldNotCreateOrderException;
-import com.amazonaws.model.Order;
-import com.amazonaws.model.request.CreateOrderRequest;
+import com.amazonaws.config.BetComponent;
+import com.amazonaws.config.DaggerBetComponent;
+import com.amazonaws.dao.BetDao;
+import com.amazonaws.exception.CouldNotCreateBetException;
+import com.amazonaws.model.Bet;
+import com.amazonaws.model.request.CreateBetRequest;
 import com.amazonaws.model.response.ErrorMessage;
 import com.amazonaws.model.response.GatewayResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -20,25 +20,25 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-public class CreateBetHandler implements OrderRequestStreamHandler {
+public class CreateBetHandler implements BetRequestStreamHandler {
     private static final ErrorMessage REQUIRE_CUSTOMER_ID_ERROR
-            = new ErrorMessage("Require customerId to create an order", SC_BAD_REQUEST);
+            = new ErrorMessage("Require customerId to create an bet", SC_BAD_REQUEST);
     private static final ErrorMessage REQUIRE_PRETAX_AMOUNT_ERROR
-            = new ErrorMessage("Require preTaxAmount to create an order",
+            = new ErrorMessage("Require preTaxAmount to create an bet",
             SC_BAD_REQUEST);
     private static final ErrorMessage REQUIRE_POST_TAX_AMOUNT_ERROR
-            = new ErrorMessage("Require postTaxAmount to create an order",
+            = new ErrorMessage("Require postTaxAmount to create an bet",
             SC_BAD_REQUEST);
 
     @Inject
     ObjectMapper objectMapper;
     @Inject
-    OrderDao orderDao;
-    private final OrderComponent orderComponent;
+    BetDao betDao;
+    private final BetComponent betComponent;
 
     public CreateBetHandler() {
-        orderComponent = DaggerOrderComponent.builder().build();
-        orderComponent.inject(this);
+        betComponent = DaggerBetComponent.builder().build();
+        betComponent.inject(this);
     }
 
     @Override
@@ -56,8 +56,8 @@ public class CreateBetHandler implements OrderRequestStreamHandler {
             writeInvalidJsonInStreamResponse(objectMapper, output, "event was null");
             return;
         }
-        JsonNode createOrderRequestBody = event.findValue("body");
-        if (createOrderRequestBody == null) {
+        JsonNode createBetRequestBody = event.findValue("body");
+        if (createBetRequestBody == null) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
                             objectMapper.writeValueAsString(
@@ -66,11 +66,11 @@ public class CreateBetHandler implements OrderRequestStreamHandler {
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
-        final CreateOrderRequest request;
+        final CreateBetRequest request;
         try {
             request = objectMapper.treeToValue(
-                    objectMapper.readTree(createOrderRequestBody.asText()),
-                    CreateOrderRequest.class);
+                    objectMapper.readTree(createBetRequestBody.asText()),
+                    CreateBetRequest.class);
         } catch (JsonParseException | JsonMappingException e) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
@@ -111,11 +111,11 @@ public class CreateBetHandler implements OrderRequestStreamHandler {
             return;
         }
         try {
-            final Order order = orderDao.createOrder(request);
+            final Bet bet = betDao.createBet(request);
             objectMapper.writeValue(output,
-                    new GatewayResponse<>(objectMapper.writeValueAsString(order),
+                    new GatewayResponse<>(objectMapper.writeValueAsString(bet),
                             APPLICATION_JSON, SC_CREATED)); //TODO redirect with a 303
-        } catch (CouldNotCreateOrderException e) {
+        } catch (CouldNotCreateBetException e) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
                             objectMapper.writeValueAsString(

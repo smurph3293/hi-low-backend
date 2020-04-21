@@ -1,12 +1,12 @@
 package com.amazonaws.handler;
 
-import com.amazonaws.config.DaggerOrderComponent;
-import com.amazonaws.config.OrderComponent;
-import com.amazonaws.dao.OrderDao;
+import com.amazonaws.config.BetComponent;
+import com.amazonaws.config.DaggerBetComponent;
+import com.amazonaws.dao.BetDao;
 import com.amazonaws.exception.TableDoesNotExistException;
 import com.amazonaws.exception.UnableToUpdateException;
-import com.amazonaws.model.Order;
-import com.amazonaws.model.request.UpdateOrderRequest;
+import com.amazonaws.model.Bet;
+import com.amazonaws.model.request.UpdateBetRequest;
 import com.amazonaws.model.response.ErrorMessage;
 import com.amazonaws.model.response.GatewayResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -21,16 +21,16 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-public class UpdateBetHandler implements OrderRequestStreamHandler {
+public class UpdateBetHandler implements BetRequestStreamHandler {
     @Inject
     ObjectMapper objectMapper;
     @Inject
-    OrderDao orderDao;
-    private final OrderComponent orderComponent;
+    BetDao betDao;
+    private final BetComponent betComponent;
 
     public UpdateBetHandler() {
-        orderComponent = DaggerOrderComponent.builder().build();
-        orderComponent.inject(this);
+        betComponent = DaggerBetComponent.builder().build();
+        betComponent.inject(this);
     }
 
     @Override
@@ -48,20 +48,20 @@ public class UpdateBetHandler implements OrderRequestStreamHandler {
             return;
         }
         final JsonNode pathParameterMap = event.findValue("pathParameters");
-        final String orderId = Optional.ofNullable(pathParameterMap)
-                .map(mapNode -> mapNode.get("order_id"))
+        final String betId = Optional.ofNullable(pathParameterMap)
+                .map(mapNode -> mapNode.get("bet_id"))
                 .map(JsonNode::asText)
                 .orElse(null);
-        if (isNullOrEmpty(orderId)) {
+        if (isNullOrEmpty(betId)) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
-                            objectMapper.writeValueAsString(ORDER_ID_WAS_NOT_SET),
+                            objectMapper.writeValueAsString(BET_ID_WAS_NOT_SET),
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
 
-        JsonNode updateOrderRequestBody = event.findValue("body");
-        if (updateOrderRequestBody == null) {
+        JsonNode updateBetRequestBody = event.findValue("body");
+        if (updateBetRequestBody == null) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
                             objectMapper.writeValueAsString(
@@ -71,10 +71,10 @@ public class UpdateBetHandler implements OrderRequestStreamHandler {
             return;
         }
 
-        final UpdateOrderRequest request;
+        final UpdateBetRequest request;
         try {
             request = objectMapper.readValue(
-                    updateOrderRequestBody.asText(), UpdateOrderRequest.class);
+                    updateBetRequestBody.asText(), UpdateBetRequest.class);
         } catch (JsonParseException | JsonMappingException e) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
@@ -94,15 +94,15 @@ public class UpdateBetHandler implements OrderRequestStreamHandler {
         }
 
         try {
-            Order updatedOrder = orderDao.updateOrder(
-                    Order.builder().orderId(orderId)
+            Bet updatedBet = betDao.updateBet(
+                    Bet.builder().betId(betId)
                             .customerId(request.getCustomerId())
                             .version(request.getVersion())
                             .preTaxAmount(request.getPreTaxAmount())
                             .postTaxAmount(request.getPostTaxAmount())
                             .build());
             objectMapper.writeValue(output, new GatewayResponse<>(
-                    objectMapper.writeValueAsString(updatedOrder),
+                    objectMapper.writeValueAsString(updatedBet),
                     APPLICATION_JSON, SC_OK));
         } catch (UnableToUpdateException e) {
             objectMapper.writeValue(output, new GatewayResponse<>(

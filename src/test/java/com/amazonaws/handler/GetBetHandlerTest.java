@@ -16,7 +16,7 @@ public class GetBetHandlerTest {
     private GetBetHandler sut = new GetBetHandler();
 
     @Test
-    public void handleRequest_whenGetOrderInputStreamEmpty_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenGetBetInputStreamEmpty_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         sut.handleRequest(new ByteArrayInputStream(new byte[0]), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Invalid JSON"));
@@ -24,11 +24,11 @@ public class GetBetHandlerTest {
     }
 
     @Test
-    public void handleRequest_whenGetOrderInputStreamHasNoMappedOrderIdPathParam_puts400InOutputStream() throws IOException {
+    public void handleRequest_whenGetBetInputStreamHasNoMappedBetIdPathParam_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { }}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
-        assertTrue(os.toString().contains("order_id was not set"));
+        assertTrue(os.toString().contains("bet_id was not set"));
         assertTrue(os.toString().contains("400"));
     }
 }

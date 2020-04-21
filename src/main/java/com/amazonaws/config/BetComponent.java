@@ -10,8 +10,8 @@ import dagger.Component;
 import javax.inject.Singleton;
 
 @Singleton
-@Component(modules = {OrderModule.class})
-public interface OrderComponent {
+@Component(modules = {BetModule.class})
+public interface BetComponent {
 
     void inject(CreateBetHandler requestHandler);
 

@@ -1,11 +1,11 @@
 package com.amazonaws.handler;
 
-import com.amazonaws.config.DaggerOrderComponent;
-import com.amazonaws.config.OrderComponent;
-import com.amazonaws.dao.OrderDao;
-import com.amazonaws.model.OrderPage;
+import com.amazonaws.config.BetComponent;
+import com.amazonaws.config.DaggerBetComponent;
+import com.amazonaws.dao.BetDao;
+import com.amazonaws.model.BetPage;
 import com.amazonaws.model.response.GatewayResponse;
-import com.amazonaws.model.response.GetOrdersResponse;
+import com.amazonaws.model.response.GetBetsResponse;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,16 +17,16 @@ import java.io.OutputStream;
 import java.util.Optional;
 import javax.inject.Inject;
 
-public class GetBetsHandler implements OrderRequestStreamHandler {
+public class GetBetsHandler implements BetRequestStreamHandler {
     @Inject
     ObjectMapper objectMapper;
     @Inject
-    OrderDao orderDao;
-    private final OrderComponent orderComponent;
+    BetDao betDao;
+    private final BetComponent betComponent;
 
     public GetBetsHandler() {
-        orderComponent = DaggerOrderComponent.builder().build();
-        orderComponent.inject(this);
+        betComponent = DaggerBetComponent.builder().build();
+        betComponent.inject(this);
     }
 
     @Override
@@ -44,11 +44,11 @@ public class GetBetsHandler implements OrderRequestStreamHandler {
                 .map(mapNode -> mapNode.get("exclusive_start_key").asText())
                 .orElse(null);
 
-        OrderPage page = orderDao.getOrders(exclusiveStartKeyQueryParameter);
+        BetPage page = betDao.getBets(exclusiveStartKeyQueryParameter);
         //TODO handle exceptions
         objectMapper.writeValue(output, new GatewayResponse<>(
                 objectMapper.writeValueAsString(
-                        new GetOrdersResponse(page.getLastEvaluatedKey(), page.getOrders())),
+                        new GetBetsResponse(page.getLastEvaluatedKey(), page.getBets())),
                 APPLICATION_JSON, SC_OK));
     }
 }

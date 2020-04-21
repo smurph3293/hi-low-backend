@@ -1,7 +1,7 @@
 package com.amazonaws.handler;
 
-import com.amazonaws.config.DaggerOrderTestComponent;
-import com.amazonaws.config.OrderTestComponent;
+import com.amazonaws.config.DaggerBetTestComponent;
+import com.amazonaws.config.BetTestComponent;
 import org.junit.After;
 import org.junit.Before;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -19,17 +19,17 @@ import javax.inject.Inject;
  * This class serves as the base class for Integration tests. do not include I T in
  * the class name so that it does not get picked up by failsafe.
  */
-public abstract class OrderHandlerTestBase {
-    private static final String TABLE_NAME = "orders_table";
+public abstract class BetHandlerTestBase {
+    private static final String TABLE_NAME = "bets_table";
 
-    private final OrderTestComponent orderComponent;
+    private final BetTestComponent betComponent;
 
     @Inject
     DynamoDbClient dynamoDb;
 
-    public OrderHandlerTestBase() {
-        orderComponent = DaggerOrderTestComponent.builder().build();
-        orderComponent.inject(this);
+    public BetHandlerTestBase() {
+        betComponent = DaggerBetTestComponent.builder().build();
+        betComponent.inject(this);
     }
 
     @Before
@@ -38,11 +38,11 @@ public abstract class OrderHandlerTestBase {
                 .tableName(TABLE_NAME)
                 .keySchema(KeySchemaElement.builder()
                         .keyType(KeyType.HASH)
-                        .attributeName("orderId")
+                        .attributeName("betId")
                         .build())
                 .attributeDefinitions(
                         AttributeDefinition.builder()
-                                .attributeName("orderId")
+                                .attributeName("betId")
                                 .attributeType(ScalarAttributeType.S)
                                 .build())
                 .provisionedThroughput(
