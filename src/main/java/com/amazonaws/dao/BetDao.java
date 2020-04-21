@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class BetDao {
 
     private static final String UPDATE_EXPRESSION
-            = "SET customerId = :cid, preTaxAmount = :pre, postTaxAmount = :post ADD version :o";
+            = "SET customerId = :cid, preTaxAmount = :pre, postTaxAmount = :post, owner = :own ADD version :o";
     private static final String BET_ID = "betId";
     private static final String PRE_TAX_AMOUNT_WAS_NULL = "preTaxAmount was null";
     private static final String POST_TAX_AMOUNT_WAS_NULL = "postTaxAmount was null";
@@ -152,6 +152,12 @@ public class BetDao {
         } catch (NullPointerException e) {
             throw new IllegalArgumentException(POST_TAX_AMOUNT_WAS_NULL);
         }
+        try {
+            expressionAttributeValues.put(":own",
+                    AttributeValue.builder().s(bet.getOwner()).build());
+        } catch (NullPointerException e) {
+            expressionAttributeValues.put(":own", AttributeValue.builder().s("default").build());
+        }
         expressionAttributeValues.put(":o", AttributeValue.builder().n("1").build());
         try {
             expressionAttributeValues.put(":v",
@@ -243,6 +249,12 @@ public class BetDao {
         }
 
         try {
+            builder.owner(item.get("owner").s());
+        } catch (NullPointerException e) {
+            builder.owner("default");
+        }
+
+        try {
             builder.version(Long.valueOf(item.get("version").n()));
         } catch (NullPointerException | NumberFormatException e) {
             throw new IllegalStateException(
@@ -270,6 +282,13 @@ public class BetDao {
         } catch (NullPointerException e) {
             throw new IllegalArgumentException(POST_TAX_AMOUNT_WAS_NULL);
         }
+        try {
+            item.put("owner",
+                    AttributeValue.builder().s(bet.getOwner().toString()).build());
+        } catch (NullPointerException e) {
+            item.put("owner",
+                    AttributeValue.builder().s("default").build());
+        }
 
         return item;
     }
@@ -291,7 +310,7 @@ public class BetDao {
             throw new IllegalArgumentException("CreateBetRequest was null");
         }
         int tries = 0;
-        while (tries < 10) {
+        while (tries < 2) {
             try {
                 Map<String, AttributeValue> item = createBetItem(createBetRequest);
                 dynamoDb.putItem(PutItemRequest.builder()
@@ -304,6 +323,7 @@ public class BetDao {
                         .customerId(item.get("customerId").s())
                         .preTaxAmount(new BigDecimal(item.get("preTaxAmount").n()))
                         .postTaxAmount(new BigDecimal(item.get("postTaxAmount").n()))
+                        .owner(item.get("owner").s())
                         .version(Long.valueOf(item.get("version").n()))
                         .build();
             } catch (ConditionalCheckFailedException e) {
@@ -314,7 +334,7 @@ public class BetDao {
             }
         }
         throw new CouldNotCreateBetException(
-                "Unable to generate unique bet id after 10 tries");
+                "Unable to generate unique bet id after 2 tries");
     }
 
     private static boolean isNullOrEmpty(final String string) {

@@ -1,11 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-    sam-app
+    Bet management tool SAM Template
 
-    Sample SAM Template for sam-app
-
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
     Function:
         Timeout: 20
@@ -42,7 +39,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       EndpointConfiguration: REGIONAL
-      StageName: bets
+      StageName: rc
       TracingEnabled: true
       Auth:
         DefaultAuthorizer: GatewayAuthorizer
@@ -184,10 +181,14 @@ Resources:
       BillingMode: PAY_PER_REQUEST
 
 Outputs:
-    HelloWorldApi:
-      Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-      Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+    BetApi:
+      Description: "API Gateway endpoint URL for rc stage for get bets function"
+      Value: !Sub "https://${MyApiGateway}.execute-api.${AWS::Region}.amazonaws.com/rc/bets/"
 
+    AuthFunction:
+      Description: "AuthFunction Lambda Function ARN"
+      Value: !GetAtt AuthFunction.Arn
+    
     GetBetFunction:
       Description: "GetBet Lambda Function ARN"
       Value: !GetAtt GetBetFunction.Arn

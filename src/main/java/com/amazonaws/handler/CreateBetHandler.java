@@ -114,7 +114,7 @@ public class CreateBetHandler implements BetRequestStreamHandler {
             final Bet bet = betDao.createBet(request);
             objectMapper.writeValue(output,
                     new GatewayResponse<>(objectMapper.writeValueAsString(bet),
-                            APPLICATION_JSON, SC_CREATED)); //TODO redirect with a 303
+                            APPLICATION_JSON, SC_CREATED));
         } catch (CouldNotCreateBetException e) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(

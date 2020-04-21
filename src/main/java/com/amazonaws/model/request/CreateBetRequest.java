@@ -19,4 +19,5 @@ public class CreateBetRequest {
     private String customerId;
     private Long preTaxAmount;
     private Long postTaxAmount;
+    private String owner;
 }

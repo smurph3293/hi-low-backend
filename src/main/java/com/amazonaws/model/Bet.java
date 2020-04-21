@@ -18,5 +18,6 @@ public class Bet {
     private String customerId;
     private BigDecimal preTaxAmount;
     private BigDecimal postTaxAmount;
+    private String owner;
     private Long version;
 }
