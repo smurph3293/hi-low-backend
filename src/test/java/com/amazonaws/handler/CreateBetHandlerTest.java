@@ -52,14 +52,14 @@ public class CreateBetHandlerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"body\": \"{}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
-        assertTrue(os.toString().contains("Require customerId to create an bet"));
+        assertTrue(os.toString().contains("Require creatorId to create an bet"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
     public void handleRequest_whenCreateBetInputStreamOnlyHasCustomer_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"body\": \"{\\\"customerId\\\": \\\"customer\\\"}\"}";
+        String input = "{\"body\": \"{\\\"creatorId\\\": \\\"customer\\\"}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Require preTaxAmount to create an bet"));
         assertTrue(os.toString().contains("400"));
@@ -68,7 +68,7 @@ public class CreateBetHandlerTest {
     @Test
     public void handleRequest_whenCreateBetInputStreamDoesNotHavePostTaxAmount_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"body\": \"{\\\"customerId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
+        String input = "{\"body\": \"{\\\"creatorId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Require postTaxAmount to create an bet"));
         assertTrue(os.toString().contains("400"));

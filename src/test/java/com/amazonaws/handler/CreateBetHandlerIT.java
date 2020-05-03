@@ -27,7 +27,7 @@ public class CreateBetHandlerIT extends BetHandlerTestBase {
         Context ctxt = TestContext.builder().build();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        String input = "{\"body\": \"{\\\"customerId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 3, \\\"postTaxAmount\\\": 10}\"}";
+        String input = "{\"body\": \"{\\\"creatorId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 3, \\\"postTaxAmount\\\": 10}\"}";
 
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, ctxt);
         Item outputWrapper = Item.fromJSON(os.toString());
@@ -75,7 +75,7 @@ public class CreateBetHandlerIT extends BetHandlerTestBase {
         os = new ByteArrayOutputStream();
         updateBet.handleRequest(
                 new ByteArrayInputStream(("{\"pathParameters\": { \"bet_id\": \"" + betId + "\"}, "
-                        + "\"body\": \"{\\\"customerId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 4, \\\"postTaxAmount\\\": 10, \\\"version\\\": 2}\"}").getBytes()),
+                        + "\"body\": \"{\\\"creatorId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 4, \\\"postTaxAmount\\\": 10, \\\"version\\\": 2}\"}").getBytes()),
                 os, ctxt);
         assertTrue(os.toString().contains("409")); //SC_CONFLICT
 
@@ -83,7 +83,7 @@ public class CreateBetHandlerIT extends BetHandlerTestBase {
         os = new ByteArrayOutputStream();
         updateBet.handleRequest(
                 new ByteArrayInputStream(("{\"pathParameters\": { \"bet_id\": \"" + betId + "\"}, "
-                        + "\"body\": \"{\\\"customerId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 4, \\\"postTaxAmount\\\": 10, \\\"version\\\": 1}\"}").getBytes()),
+                        + "\"body\": \"{\\\"creatorId\\\": \\\"foo\\\", \\\"preTaxAmount\\\": 4, \\\"postTaxAmount\\\": 10, \\\"version\\\": 1}\"}").getBytes()),
                 os, ctxt);
         outputWrapper = Item.fromJSON(os.toString());
         assertTrue(outputWrapper.hasAttribute("headers"));
@@ -108,9 +108,9 @@ public class CreateBetHandlerIT extends BetHandlerTestBase {
         String betId = body.getString("betId");
         assertNotNull(betId);
         assertTrue(betId.contains("-"));
-        assertTrue(body.hasAttribute("customerId"));
-        String customerId = body.getString("customerId");
-        assertEquals("foo", customerId);
+        assertTrue(body.hasAttribute("creatorId"));
+        String creatorId = body.getString("creatorId");
+        assertEquals("foo", creatorId);
         assertTrue(body.hasAttribute("preTaxAmount"));
         BigDecimal preTaxAmount = body.getNumber("preTaxAmount");
         assertEquals(new BigDecimal(expectedPreTaxAmount), preTaxAmount);

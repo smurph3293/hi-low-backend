@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 public class CreateBetHandler implements BetRequestStreamHandler {
     private static final ErrorMessage REQUIRE_CUSTOMER_ID_ERROR
-            = new ErrorMessage("Require customerId to create an bet", SC_BAD_REQUEST);
+            = new ErrorMessage("Require creatorId to create an bet", SC_BAD_REQUEST);
     private static final ErrorMessage REQUIRE_PRETAX_AMOUNT_ERROR
             = new ErrorMessage("Require preTaxAmount to create an bet",
             SC_BAD_REQUEST);
@@ -89,7 +89,7 @@ public class CreateBetHandler implements BetRequestStreamHandler {
             return;
         }
 
-        if (isNullOrEmpty(request.getCustomerId())) {
+        if (isNullOrEmpty(request.getCreatorId())) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
                             objectMapper.writeValueAsString(REQUIRE_CUSTOMER_ID_ERROR),

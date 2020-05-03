@@ -96,7 +96,7 @@ public class UpdateBetHandler implements BetRequestStreamHandler {
         try {
             Bet updatedBet = betDao.updateBet(
                     Bet.builder().betId(betId)
-                            .customerId(request.getCustomerId())
+                            .creatorId(request.getCreatorId())
                             .version(request.getVersion())
                             .preTaxAmount(request.getPreTaxAmount())
                             .postTaxAmount(request.getPostTaxAmount())

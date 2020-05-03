@@ -50,7 +50,7 @@ public class BetDaoTest {
     public void createBet_whenTableDoesNotExist_throwsTableDoesNotExistException() {
         doThrow(ResourceNotFoundException.builder().build()).when(dynamoDb).putItem(any(PutItemRequest.class));
         sut.createBet(CreateBetRequest.builder()
-                .preTaxAmount(100L).postTaxAmount(109L).customerId("me").build());
+                .preTaxAmount(100L).postTaxAmount(109L).creatorId("me").build());
     }
 
     @Test(expected = TableDoesNotExistException.class)
@@ -112,7 +112,7 @@ public class BetDaoTest {
     public void getBets_whenTableNotEmpty_returnsPage() {
         Map<String, AttributeValue> item = new HashMap<>();
         item.put("betId", AttributeValue.builder().s("d").build());
-        item.put("customerId", AttributeValue.builder().s("d").build());
+        item.put("creatorId", AttributeValue.builder().s("d").build());
         item.put("preTaxAmount", AttributeValue.builder().n("1").build());
         item.put("postTaxAmount", AttributeValue.builder().n("10").build());
         item.put("version", AttributeValue.builder().n("1").build());
@@ -128,7 +128,7 @@ public class BetDaoTest {
         doThrow(ResourceNotFoundException.builder().build()).when(dynamoDb).updateItem(any(UpdateItemRequest.class));
         sut.updateBet(Bet.builder()
                 .betId(BET_ID)
-                .customerId("customer")
+                .creatorId("customer")
                 .preTaxAmount(BigDecimal.ONE)
                 .postTaxAmount(BigDecimal.TEN)
                 .version(0L)
@@ -140,7 +140,7 @@ public class BetDaoTest {
         doThrow(ResourceNotFoundException.builder().build()).when(dynamoDb).updateItem(any(UpdateItemRequest.class));
         sut.updateBet(Bet.builder()
                 .betId(BET_ID)
-                .customerId("customer")
+                .creatorId("customer")
                 .preTaxAmount(BigDecimal.ONE)
                 .postTaxAmount(BigDecimal.TEN)
                 .version(1L)
@@ -162,7 +162,7 @@ public class BetDaoTest {
     public void createBet_whenAlreadyExists_throwsCouldNotCreateBetException() {
         doThrow(ConditionalCheckFailedException.builder().build()).when(dynamoDb).putItem(any(PutItemRequest.class));
         sut.createBet(CreateBetRequest.builder()
-                .preTaxAmount(100L).postTaxAmount(109L).customerId("me").build());
+                .preTaxAmount(100L).postTaxAmount(109L).creatorId("me").build());
     }
 
     @Test(expected = UnableToDeleteException.class)
@@ -196,7 +196,7 @@ public class BetDaoTest {
     public void deleteBet_whenDeleteItemReturnsOkBetItem_returnsDeletedBet() {
         Map<String, AttributeValue> betItem = new HashMap<>();
         betItem.put("betId", AttributeValue.builder().s(BET_ID).build());
-        betItem.put("customerId", AttributeValue.builder().s("customer").build());
+        betItem.put("creatorId", AttributeValue.builder().s("customer").build());
         betItem.put("preTaxAmount", AttributeValue.builder().n("1").build());
         betItem.put("postTaxAmount", AttributeValue.builder().n("10").build());
         betItem.put("version", AttributeValue.builder().n("1").build());
@@ -216,7 +216,7 @@ public class BetDaoTest {
         Bet postBet = new Bet();
         postBet.setBetId(BET_ID);
         postBet.setVersion(0L);
-        postBet.setCustomerId("customer");
+        postBet.setCreatorId("customer");
         postBet.setPreTaxAmount(BigDecimal.ONE);
         postBet.setPostTaxAmount(BigDecimal.TEN);
         doThrow(ConditionalCheckFailedException.builder().build())
@@ -243,10 +243,10 @@ public class BetDaoTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateBet_whenCustomerIdSetButEmpty_throwsIllegalArgumentException() {
+    public void updateBet_whenCreatorIdSetButEmpty_throwsIllegalArgumentException() {
         Bet postBet = new Bet();
         postBet.setBetId("s");
-        postBet.setCustomerId("");
+        postBet.setCreatorId("");
         sut.updateBet(postBet);
     }
 
@@ -254,7 +254,7 @@ public class BetDaoTest {
     public void updateBet_whenPreTaxAmountNull_throwsIllegalArgumentException() {
         Bet postBet = new Bet();
         postBet.setBetId("s");
-        postBet.setCustomerId("c");
+        postBet.setCreatorId("c");
         postBet.setPreTaxAmount(null);
         postBet.setPostTaxAmount(BigDecimal.TEN);
         postBet.setVersion(1L);
@@ -265,7 +265,7 @@ public class BetDaoTest {
     public void updateBet_whenPostTaxAmountNull_throwsIllegalArgumentException() {
         Bet postBet = new Bet();
         postBet.setBetId("s");
-        postBet.setCustomerId("c");
+        postBet.setCreatorId("c");
         postBet.setPreTaxAmount(BigDecimal.ONE);
         postBet.setPostTaxAmount(null);
         postBet.setVersion(1L);
@@ -276,7 +276,7 @@ public class BetDaoTest {
     public void updateBet_whenVersionNull_throwsIllegalArgumentException() {
         Bet postBet = new Bet();
         postBet.setBetId("s");
-        postBet.setCustomerId("c");
+        postBet.setCreatorId("c");
         postBet.setPreTaxAmount(BigDecimal.ONE);
         postBet.setPostTaxAmount(BigDecimal.TEN);
         postBet.setVersion(null);
@@ -287,7 +287,7 @@ public class BetDaoTest {
     public void updateBet_whenAllSet_returnsUpdate() {
         Map<String, AttributeValue> createdItem = new HashMap<>();
         createdItem.put("betId", AttributeValue.builder().s(UUID.randomUUID().toString()).build());
-        createdItem.put("customerId", AttributeValue.builder().s("customer").build());
+        createdItem.put("creatorId", AttributeValue.builder().s("customer").build());
         createdItem.put("preTaxAmount", AttributeValue.builder().n("1").build());
         createdItem.put("postTaxAmount", AttributeValue.builder().n("10").build());
         createdItem.put("version", AttributeValue.builder().n("1").build());
@@ -297,7 +297,7 @@ public class BetDaoTest {
 
         Bet postBet = new Bet();
         postBet.setBetId(createdItem.get("betId").s());
-        postBet.setCustomerId("customer");
+        postBet.setCreatorId("customer");
         postBet.setPreTaxAmount(BigDecimal.ONE);
         postBet.setPostTaxAmount(BigDecimal.TEN);
         postBet.setVersion(1L);
@@ -310,20 +310,20 @@ public class BetDaoTest {
     public void createBet_whenBetDoesNotExist_createsBetWithPopulatedBetId() {
         Map<String, AttributeValue> createdItem = new HashMap<>();
         createdItem.put("betId", AttributeValue.builder().s(UUID.randomUUID().toString()).build());
-        createdItem.put("customerId", AttributeValue.builder().s("customer").build());
+        createdItem.put("creatorId", AttributeValue.builder().s("customer").build());
         createdItem.put("preTaxAmount", AttributeValue.builder().n("1").build());
         createdItem.put("postTaxAmount", AttributeValue.builder().n("10").build());
         createdItem.put("version", AttributeValue.builder().n("1").build());
         doReturn(PutItemResponse.builder().attributes(createdItem).build()).when(dynamoDb).putItem(any(PutItemRequest.class));
 
         Bet bet = sut.createBet(CreateBetRequest.builder()
-                .customerId("customer")
+                .creatorId("customer")
                 .preTaxAmount(1L)
                 .postTaxAmount(10L).build());
         assertNotNull(bet.getVersion());
         //for a new item, object mapper sets version to 1
         assertEquals(1L, bet.getVersion().longValue());
-        assertEquals("customer", bet.getCustomerId());
+        assertEquals("customer", bet.getCreatorId());
         assertEquals(BigDecimal.ONE, bet.getPreTaxAmount());
         assertEquals(BigDecimal.TEN, bet.getPostTaxAmount());
         assertNotNull(bet.getBetId());
@@ -367,28 +367,28 @@ public class BetDaoTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getBet_whenGetItemReturnsHashMapWithCustomerIdWrongType_throwsIllegalStateException() {
+    public void getBet_whenGetItemReturnsHashMapWithCreatorIdWrongType_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().nul(true).build());
+        map.put("creatorId", AttributeValue.builder().nul(true).build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         sut.getBet(BET_ID);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getBet_whenGetItemReturnsHashMapWithUnsetCustomerIdAV_throwsIllegalStateException() {
+    public void getBet_whenGetItemReturnsHashMapWithUnsetCreatorIdAV_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().build());
+        map.put("creatorId", AttributeValue.builder().build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         sut.getBet(BET_ID);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getBet_whenGetItemReturnsHashMapWithEmptyCustomerId_throwsIllegalStateException() {
+    public void getBet_whenGetItemReturnsHashMapWithEmptyCreatorId_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("").build());
+        map.put("creatorId", AttributeValue.builder().s("").build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         sut.getBet(BET_ID);
     }
@@ -397,7 +397,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithPreTaxWrongType_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().nul(true).build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         sut.getBet(BET_ID);
@@ -407,7 +407,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithUnsetPreTaxAV_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         sut.getBet(BET_ID);
@@ -417,7 +417,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithInvalidPreTax_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("a").build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         sut.getBet(BET_ID);
@@ -427,7 +427,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithPostTaxWrongType_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("1").build());
         map.put("postTaxAmount", AttributeValue.builder().nul(true).build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
@@ -438,7 +438,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithUnsetPostTaxAV_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("1").build());
         map.put("postTaxAmount", AttributeValue.builder().build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
@@ -449,7 +449,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithInvalidPostTax_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("1").build());
         map.put("postTaxAmount", AttributeValue.builder().n("a").build());
         doReturn(GetItemResponse.builder().item(map).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
@@ -460,7 +460,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithVersionOfWrongType_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("1").build());
         map.put("postTaxAmount", AttributeValue.builder().n("10").build());
         map.put("version", AttributeValue.builder().ss("").build());
@@ -472,7 +472,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithUnsetVersionAV_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("1").build());
         map.put("postTaxAmount", AttributeValue.builder().n("10").build());
         map.put("version", AttributeValue.builder().build());
@@ -484,7 +484,7 @@ public class BetDaoTest {
     public void getBet_whenGetItemReturnsHashMapWithInvalidVersion_throwsIllegalStateException() {
         Map<String, AttributeValue> map = new HashMap<>();
         map.put("betId", AttributeValue.builder().s("a").build());
-        map.put("customerId", AttributeValue.builder().s("a").build());
+        map.put("creatorId", AttributeValue.builder().s("a").build());
         map.put("preTaxAmount", AttributeValue.builder().n("1").build());
         map.put("postTaxAmount", AttributeValue.builder().n("10").build());
         map.put("version", AttributeValue.builder().n("a").build());
@@ -499,14 +499,14 @@ public class BetDaoTest {
         betItem.put("version", AttributeValue.builder().n("1").build());
         betItem.put("preTaxAmount", AttributeValue.builder().n("1").build());
         betItem.put("postTaxAmount", AttributeValue.builder().n("10").build());
-        betItem.put("customerId", AttributeValue.builder().s("customer").build());
+        betItem.put("creatorId", AttributeValue.builder().s("customer").build());
         doReturn(GetItemResponse.builder().item(betItem).build()).when(dynamoDb).getItem(any(GetItemRequest.class));
         Bet bet = sut.getBet(BET_ID);
         assertEquals(BET_ID, bet.getBetId());
         assertEquals(1L, bet.getVersion().longValue());
         assertEquals(1L, bet.getPreTaxAmount().longValue());
         assertEquals(10L, bet.getPostTaxAmount().longValue());
-        assertEquals("customer", bet.getCustomerId());
+        assertEquals("customer", bet.getCreatorId());
     }
 
     //connection dropped corner cases

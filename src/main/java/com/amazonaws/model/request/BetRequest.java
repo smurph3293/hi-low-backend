@@ -1,5 +1,6 @@
-package com.amazonaws.model;
+package com.amazonaws.model.request;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,8 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Bet {
-    private String betId;
+@JsonAutoDetect
+public class BetRequest {
     private String xref; // external reference
     private String creatorXref; // owner of bet
     private List<String> participants; // everyone involved. Used in conditions and punishments
@@ -30,5 +31,4 @@ public class Bet {
     private String resultXref; // url, or video posting
     private List<String> comments; // comments on bet and result
     private Boolean isComplete; // commissioner decided bet punishment is complete or owner
-    private Long version;
 }

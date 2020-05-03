@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 @JsonAutoDetect
 public class UpdateBetRequest {
     private String betId;
-    private String customerId;
+    private String creatorId;
     private BigDecimal preTaxAmount;
     private BigDecimal postTaxAmount;
-    private String owner;
+    private String description;
     private Long version;
 }

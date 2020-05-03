@@ -61,14 +61,14 @@ public class UpdateBetHandlerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
-        assertTrue(os.toString().contains("customerId was null"));
+        assertTrue(os.toString().contains("creatorId was null"));
         assertTrue(os.toString().contains("400"));
     }
 
     @Test
     public void handleRequest_whenUpdateBetInputStreamOnlyHasCustomer_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"customerId\\\": \\\"customer\\\"}\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"creatorId\\\": \\\"customer\\\"}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("preTaxAmount was null"));
         assertTrue(os.toString().contains("400"));
@@ -77,7 +77,7 @@ public class UpdateBetHandlerTest {
     @Test
     public void handleRequest_whenUpdateBetInputStreamDoesNotHavePostTaxAmount_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"customerId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
+        String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"creatorId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("postTaxAmount was null"));
         assertTrue(os.toString().contains("400"));

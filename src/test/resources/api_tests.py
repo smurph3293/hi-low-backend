@@ -1,20 +1,3 @@
-##
-# Copyright 2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this
-# software and associated documentation files (the "Software"), to deal in the Software
-# without restriction, including without limitation the rights to use, copy, modify,
-# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-# permit persons to whom the Software is furnished to do so.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-##
-
 import sys
 import requests
 import inspect
@@ -29,7 +12,7 @@ NUM_BETS = int(sys.argv[1])
 def test_create_bet():
   print('\n\nTEST: CREATING BET')
   r = requests.post(BASE_URL, data=json.dumps({
-                    "customerId": randint(1, 50),
+                    "creatorId": randint(1, 50),
                     "preTaxAmount": randint(1, 50),
                     "postTaxAmount": randint(1, 50)}))
   try:
@@ -85,7 +68,7 @@ def test_update_bet():
   bets = data['bets']
   for i in range(len(bets)):
     payload = {
-      "customerId": randint(5000, 6000),
+      "creatorId": randint(5000, 6000),
       "preTaxAmount": randint(5000, 6000),
       "postTaxAmount": randint(5000, 6000),
       "version": bets[i]['version']

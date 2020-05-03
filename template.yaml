@@ -83,7 +83,7 @@ Resources:
       RetentionPolicy: Delete
 
   GetBetFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/aws-sam-java-rest-1.0.0.jar
       Handler: com.amazonaws.handler.GetBetHandler::handleRequest
@@ -94,30 +94,20 @@ Resources:
             TableName: !Ref BetsTable
       Events:
         GetBet:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             RestApiId: !Ref MyApiGateway
             Path: /bets/{bet_id}
             Method: get
-  GetBetsFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: target/aws-sam-java-rest-1.0.0.jar
-      Handler: com.amazonaws.handler.GetBetsHandler::handleRequest
-      Runtime: java11
-      Tracing: Active
-      Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref BetsTable
       Events:
         GetBets:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             RestApiId: !Ref MyApiGateway
             Path: /bets
             Method: get
   UpdateBetFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/aws-sam-java-rest-1.0.0.jar
       Handler: com.amazonaws.handler.UpdateBetHandler::handleRequest
@@ -128,13 +118,13 @@ Resources:
             TableName: !Ref BetsTable
       Events:
         UpdateBet:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api 
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /bets/{bet_id}
+            Path: /bets/{xref}
             Method: post
   DeleteBetFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/aws-sam-java-rest-1.0.0.jar
       Handler: com.amazonaws.handler.DeleteBetHandler::handleRequest
@@ -145,13 +135,13 @@ Resources:
             TableName: !Ref BetsTable
       Events:
         DeleteBet:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             RestApiId: !Ref MyApiGateway
             Path: /bets/{bet_id}
             Method: delete
   CreateBetFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: target/aws-sam-java-rest-1.0.0.jar
       Handler: com.amazonaws.handler.CreateBetHandler::handleRequest
@@ -162,7 +152,7 @@ Resources:
             TableName: !Ref BetsTable
       Events:
         CreateBet:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             RestApiId: !Ref MyApiGateway
             Path: /bets
