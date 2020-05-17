@@ -31,8 +31,7 @@ public class DeleteBetHandler implements BetRequestStreamHandler {
     }
 
     @Override
-    public void handleRequest(InputStream input, OutputStream output,
-                              Context context) throws IOException {
+    public void handleRequest(InputStream input, OutputStream output, Context context) throws IOException {
         final JsonNode event;
         try {
             event = objectMapper.readTree(input);
@@ -46,33 +45,27 @@ public class DeleteBetHandler implements BetRequestStreamHandler {
         }
 
         final JsonNode pathParameterMap = event.findValue("pathParameters");
-        final String betId = Optional.ofNullable(pathParameterMap)
-                .map(mapNode -> mapNode.get("bet_id"))
-                .map(JsonNode::asText)
-                .orElse(null);
+        final String betXref = Optional.ofNullable(pathParameterMap).map(mapNode -> mapNode.get("betXref"))
+                .map(JsonNode::asText).orElse(null);
 
-        if (isNullOrEmpty(betId)) {
-            objectMapper.writeValue(output,
-                    new GatewayResponse<>(
-                            objectMapper.writeValueAsString(BET_ID_WAS_NOT_SET),
-                            APPLICATION_JSON, SC_BAD_REQUEST));
+        if (isNullOrEmpty(betXref)) {
+            objectMapper.writeValue(output, new GatewayResponse<>(objectMapper.writeValueAsString(BET_XREF_WAS_NOT_SET),
+                    APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
         try {
             objectMapper.writeValue(output, new GatewayResponse<>(
-                    objectMapper.writeValueAsString(betDao.deleteBet(betId)),
-                    APPLICATION_JSON, SC_OK));
+                    objectMapper.writeValueAsString(betDao.deleteBet(betXref)), APPLICATION_JSON, SC_OK));
         } catch (BetDoesNotExistException e) {
-            objectMapper.writeValue(output, new GatewayResponse<>(
-                    objectMapper.writeValueAsString(new ErrorMessage(e.getMessage(),
-                            SC_NOT_FOUND)),
-                    APPLICATION_JSON, SC_NOT_FOUND));
+            objectMapper.writeValue(output,
+                    new GatewayResponse<>(
+                            objectMapper.writeValueAsString(new ErrorMessage(e.getMessage(), SC_NOT_FOUND)),
+                            APPLICATION_JSON, SC_NOT_FOUND));
         } catch (UnableToDeleteException e) {
-            objectMapper.writeValue(output, new GatewayResponse<>(
-                    objectMapper.writeValueAsString(new ErrorMessage(e.getMessage(),
-                            SC_CONFLICT)),
-                    APPLICATION_JSON, SC_CONFLICT));
+            objectMapper.writeValue(output,
+                    new GatewayResponse<>(
+                            objectMapper.writeValueAsString(new ErrorMessage(e.getMessage(), SC_CONFLICT)),
+                            APPLICATION_JSON, SC_CONFLICT));
         }
     }
 }
-

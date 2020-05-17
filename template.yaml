@@ -97,7 +97,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /bets/{bet_id}
+            Path: /bets/{betXref}
             Method: get
       Events:
         GetBets:
@@ -121,7 +121,7 @@ Resources:
           Type: Api 
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /bets/{xref}
+            Path: /bets/{betXref}
             Method: post
   DeleteBetFunction:
     Type: AWS::Serverless::Function
@@ -138,7 +138,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref MyApiGateway
-            Path: /bets/{bet_id}
+            Path: /bets/{betXref}
             Method: delete
   CreateBetFunction:
     Type: AWS::Serverless::Function
@@ -161,12 +161,12 @@ Resources:
   BetsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: bets_table
+      TableName: bet
       AttributeDefinitions:
-        - AttributeName: betId
+        - AttributeName: betXref
           AttributeType: S
       KeySchema:
-        - AttributeName: betId
+        - AttributeName: betXref
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
 

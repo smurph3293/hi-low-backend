@@ -12,9 +12,7 @@ NUM_BETS = int(sys.argv[1])
 def test_create_bet():
   print('\n\nTEST: CREATING BET')
   r = requests.post(BASE_URL, data=json.dumps({
-                    "creatorId": randint(1, 50),
-                    "preTaxAmount": randint(1, 50),
-                    "postTaxAmount": randint(1, 50)}))
+                    "creatorXref": randint(1, 50)}))
   try:
     response = r.text
     print(response)

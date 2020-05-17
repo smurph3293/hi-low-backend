@@ -1,6 +1,7 @@
 package com.amazonaws.handler;
 
 import com.amazonaws.services.lambda.runtime.TestContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +22,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamHasNoMappedBetIdPathParam_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { }}";
@@ -30,6 +32,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamHasNoBody_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }}";
@@ -39,6 +42,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamHasNullBody_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"null\"}";
@@ -48,6 +52,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamHasWrongTypeForBody_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"1\"}";
@@ -57,6 +62,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamHasEmptyBodyDict_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{}\"}";
@@ -66,6 +72,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamOnlyHasCustomer_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"creatorId\\\": \\\"customer\\\"}\"}";
@@ -75,6 +82,7 @@ public class UpdateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenUpdateBetInputStreamDoesNotHavePostTaxAmount_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { \"bet_id\" : \"a\" }, \"body\": \"{\\\"creatorId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";

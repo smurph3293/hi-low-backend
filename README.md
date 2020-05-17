@@ -25,7 +25,7 @@ mvn package
 
 **Invoking function locally through local API Gateway**
 1. Start DynamoDB Local in a Docker container. `docker run -p 8000:8000 amazon/dynamodb-local`
-2. Create the DynamoDB table. `aws dynamodb create-table --table-name bets_table --attribute-definitions AttributeName=betId,AttributeType=S --key-schema AttributeName=betId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
+2. Create the DynamoDB table. `aws dynamodb create-table --table-name bet --attribute-definitions AttributeName=betId,AttributeType=S --key-schema AttributeName=betId,KeyType=HASH --billing-mode PAY_PER_REQUEST --endpoint-url http://localhost:8000`
 3. Start the SAM local API.
  - On a Mac: `sam local start-api --env-vars src/test/resources/test_environment_mac.json`
  - On Windows: `sam local start-api --env-vars src/test/resources/test_environment_windows.json`

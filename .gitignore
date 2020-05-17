@@ -31,3 +31,6 @@ packaged.yaml
 .factorypath
 .project
 .settings/**/*
+
+.idea/**/*
+*.iml

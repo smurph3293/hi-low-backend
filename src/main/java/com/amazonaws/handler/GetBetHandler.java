@@ -45,19 +45,19 @@ public class GetBetHandler implements BetRequestStreamHandler {
             return;
         }
         final JsonNode pathParameterMap = event.findValue("pathParameters");
-        final String betId = Optional.ofNullable(pathParameterMap)
-                .map(mapNode -> mapNode.get("bet_id"))
+        final String betXref = Optional.ofNullable(pathParameterMap)
+                .map(mapNode -> mapNode.get("betXref"))
                 .map(JsonNode::asText)
                 .orElse(null);
-        if (isNullOrEmpty(betId)) {
+        if (isNullOrEmpty(betXref)) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
-                            objectMapper.writeValueAsString(BET_ID_WAS_NOT_SET),
+                            objectMapper.writeValueAsString(BET_XREF_WAS_NOT_SET),
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
         try {
-            Bet bet = betDao.getBet(betId);
+            Bet bet = betDao.getBet(betXref);
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
                             objectMapper.writeValueAsString(bet),

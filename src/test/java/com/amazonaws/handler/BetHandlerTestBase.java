@@ -20,7 +20,7 @@ import javax.inject.Inject;
  * the class name so that it does not get picked up by failsafe.
  */
 public abstract class BetHandlerTestBase {
-    private static final String TABLE_NAME = "bets_table";
+    private static final String TABLE_NAME = "bet";
 
     private final BetTestComponent betComponent;
 
@@ -38,11 +38,11 @@ public abstract class BetHandlerTestBase {
                 .tableName(TABLE_NAME)
                 .keySchema(KeySchemaElement.builder()
                         .keyType(KeyType.HASH)
-                        .attributeName("betId")
+                        .attributeName("betXref")
                         .build())
                 .attributeDefinitions(
                         AttributeDefinition.builder()
-                                .attributeName("betId")
+                                .attributeName("betXref")
                                 .attributeType(ScalarAttributeType.S)
                                 .build())
                 .provisionedThroughput(

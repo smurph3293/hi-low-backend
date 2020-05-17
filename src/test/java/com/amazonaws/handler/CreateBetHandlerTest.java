@@ -1,6 +1,7 @@
 package com.amazonaws.handler;
 
 import com.amazonaws.services.lambda.runtime.TestContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -48,29 +49,12 @@ public class CreateBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenCreateBetInputStreamHasEmptyBodyDict_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"body\": \"{}\"}";
         sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
         assertTrue(os.toString().contains("Require creatorId to create an bet"));
-        assertTrue(os.toString().contains("400"));
-    }
-
-    @Test
-    public void handleRequest_whenCreateBetInputStreamOnlyHasCustomer_puts400InOutputStream() throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"body\": \"{\\\"creatorId\\\": \\\"customer\\\"}\"}";
-        sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
-        assertTrue(os.toString().contains("Require preTaxAmount to create an bet"));
-        assertTrue(os.toString().contains("400"));
-    }
-
-    @Test
-    public void handleRequest_whenCreateBetInputStreamDoesNotHavePostTaxAmount_puts400InOutputStream() throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        String input = "{\"body\": \"{\\\"creatorId\\\": \\\"customer\\\", \\\"preTaxAmount\\\": 1}\"}";
-        sut.handleRequest(new ByteArrayInputStream(input.getBytes()), os, TestContext.builder().build());
-        assertTrue(os.toString().contains("Require postTaxAmount to create an bet"));
         assertTrue(os.toString().contains("400"));
     }
 }

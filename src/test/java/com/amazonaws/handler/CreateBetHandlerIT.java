@@ -19,7 +19,6 @@ public class CreateBetHandlerIT extends BetHandlerTestBase {
 
     private CreateBetHandler sut = new CreateBetHandler();
     private GetBetHandler getBet = new GetBetHandler();
-    private GetBetsHandler getBets = new GetBetsHandler();
     private UpdateBetHandler updateBet = new UpdateBetHandler();
 
     @Test
@@ -65,11 +64,6 @@ public class CreateBetHandlerIT extends BetHandlerTestBase {
         assertNotNull(bodyString);
         body = Item.fromJSON(bodyString);
         verifyBetItem(body, 1, "3");
-
-        //now that we can get the singleton lets see if we can get it in a page
-        os = new ByteArrayOutputStream();
-        getBets.handleRequest(new ByteArrayInputStream("{}".getBytes()), os, ctxt);
-        assertTrue(os.toString().contains(betId));
 
         //update the bet with invalid arguments (try to change the version from 1 to 2 and the preTaxAmount from 3 to 4)
         os = new ByteArrayOutputStream();

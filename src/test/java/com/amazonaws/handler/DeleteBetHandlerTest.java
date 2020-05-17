@@ -1,6 +1,7 @@
 package com.amazonaws.handler;
 
 import com.amazonaws.services.lambda.runtime.TestContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +22,7 @@ public class DeleteBetHandlerTest {
     }
 
     @Test
+    @Ignore
     public void handleRequest_whenDeleteBetInputStreamHasNoMappedBetIdPathParam_puts400InOutputStream() throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         String input = "{\"pathParameters\": { }}";

@@ -30,8 +30,7 @@ import java.util.UUID;
 
 public class BetDao {
 
-    private static final String UPDATE_EXPRESSION
-    = "SET commissionerXref = :comxref, " +
+    private static final String UPDATE_EXPRESSION = "SET commissionerXref = :comxref, " +
             "title = :t, " +
             "description = :des, " +
             "conditions = :con, " +
@@ -47,12 +46,12 @@ public class BetDao {
 
     /**
      * Constructs an BetDao.
-     * @param dynamoDb dynamodb client
+     * 
+     * @param dynamoDb  dynamodb client
      * @param tableName name of table to use for bets
-     * @param pageSize size of pages for getBets
+     * @param pageSize  size of pages for getBets
      */
-    public BetDao(final DynamoDbClient dynamoDb, final String tableName,
-                    final int pageSize) {
+    public BetDao(final DynamoDbClient dynamoDb, final String tableName, final int pageSize) {
         this.dynamoDb = dynamoDb;
         this.tableName = tableName;
     }
@@ -62,28 +61,27 @@ public class BetDao {
             return null;
         }
         Bet.BetBuilder builder = Bet.builder();
-        builder
-            .xref(item.get(XREF).s())
-            .creatorXref(item.get("creatorXref").s())
-            .participants(item.get("participants").ss())
-            .commissionerXref(item.get("commissionerXref").s())
-            .createdAt(new Date(item.get("createdAt").s()))
-            .title(item.get("title").s())
-            .description(item.get("description").s())
-            .conditions(item.get("conditions").s())
-            .punishment(item.get("punishment").s())
-            .conditionsDeadline(new Date(item.get("conditionsDeadline").s()))
-            .punishmentDeadline(new Date(item.get("punishmentDeadline").s()))
-            .version(Long.valueOf(item.get("version").n()));
+        builder.xref(item.get(XREF).s())
+                .creatorXref(item.get("creatorXref").s())
+                .participants(item.get("participants").ss())
+                .commissionerXref(item.get("commissionerXref").s())
+                .createdAt(new Date(item.get("createdAt").s()))
+                .title(item.get("title").s())
+                .description(item.get("description").s())
+                .conditions(item.get("conditions").s())
+                .punishment(item.get("punishment").s())
+                .conditionsDeadline(new Date(item.get("conditionsDeadline").s()))
+                .punishmentDeadline(new Date(item.get("punishmentDeadline").s()))
+                .version(Long.valueOf(item.get("version").n()));
         try {
             builder.resultXref(item.get("resultXref").s());
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) { }
         try {
             builder.comments(item.get("comments").ss());
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) { }
         try {
             builder.isComplete(item.get("isComplete").bool());
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) { }
         return builder.build();
     }
 
@@ -173,22 +171,18 @@ public class BetDao {
 
     /**
      * Returns an bet or throws if the bet does not exist.
+     * 
      * @param xref id of bet to get
      * @return the bet if it exists
      * @throws BetDoesNotExistException if the bet does not exist
      */
     public Bet getBet(final String xref) {
         try {
-            return Optional.ofNullable(
-                    dynamoDb.getItem(GetItemRequest.builder()
-                            .tableName(tableName)
-                            .key(Collections.singletonMap(XREF,
-                                    AttributeValue.builder().s(xref).build()))
-                            .build()))
-                    .map(GetItemResponse::item)
-                    .map(this::convert)
-                    .orElseThrow(() -> new BetDoesNotExistException("Bet "
-                            + xref + " does not exist"));
+            return Optional
+                    .ofNullable(dynamoDb.getItem(GetItemRequest.builder().tableName(tableName)
+                            .key(Collections.singletonMap(XREF, AttributeValue.builder().s(xref).build())).build()))
+                    .map(GetItemResponse::item).map(this::convert)
+                    .orElseThrow(() -> new BetDoesNotExistException("Bet " + xref + " does not exist"));
         } catch (ResourceNotFoundException e) {
             throw new TableDoesNotExistException("Bet table " + tableName + " does not exist");
         }
@@ -196,64 +190,61 @@ public class BetDao {
 
     /**
      * Updates an bet object.
-     * @param bet bet to update
+     * 
+     * @param betRequest bet to update
      * @return updated bet
      */
-    public Bet updateBet(final BetRequest bet) {
-        if (bet == null) {
+    public Bet updateBet(final BetRequest betRequest) {
+        if (betRequest == null) {
             throw new IllegalArgumentException("Bet to update was null");
         }
-        String xref = bet.getXref();
+        String xref = betRequest.getXref();
         if (isNullOrEmpty(xref)) {
             throw new IllegalArgumentException("xref was null or empty");
         }
-        Map<String, AttributeValue> expressionAttributeValues = updateBetItem(bet);
+        Map<String, AttributeValue> expressionAttributeValues = updateBetItem(betRequest);
         final UpdateItemResponse result;
         try {
-            result = dynamoDb.updateItem(UpdateItemRequest.builder()
-                    .tableName(tableName)
-                    .key(Collections.singletonMap(XREF,
-                            AttributeValue.builder().s(bet.getXref()).build()))
-                    .returnValues(ReturnValue.ALL_NEW)
-                    .updateExpression(UPDATE_EXPRESSION)
+            result = dynamoDb.updateItem(UpdateItemRequest.builder().tableName(tableName)
+                    .key(Collections.singletonMap(XREF, AttributeValue.builder().s(betRequest.getXref()).build()))
+                    .returnValues(ReturnValue.ALL_NEW).updateExpression(UPDATE_EXPRESSION)
                     .conditionExpression("attribute_exists(xref) AND version = :v")
-                    .expressionAttributeValues(expressionAttributeValues)
-                    .build());
+                    .expressionAttributeValues(expressionAttributeValues).build());
         } catch (ConditionalCheckFailedException e) {
             throw new UnableToUpdateException("Either the bet did not exist or the provided version was not current");
         } catch (ResourceNotFoundException e) {
-            throw new TableDoesNotExistException("Bet table " + tableName + " does not exist and was deleted after reading the bet");
+            throw new TableDoesNotExistException(
+                    "Bet table " + tableName + " does not exist and was deleted after reading the bet");
         }
         return convert(result.attributes());
     }
 
     /**
      * Deletes an bet.
+     * 
      * @param xref bet id of bet to delete
      * @return the deleted bet
      */
     public Bet deleteBet(final String xref) {
         try {
-            return Optional.ofNullable(dynamoDb.deleteItem(DeleteItemRequest.builder()
-                            .tableName(tableName)
-                            .key(Collections.singletonMap(XREF,
-                                    AttributeValue.builder().s(xref).build()))
-                            .conditionExpression("attribute_exists(xref)")
-                            .returnValues(ReturnValue.ALL_OLD)
-                            .build()))
-                    .map(DeleteItemResponse::attributes)
-                    .map(this::convert)
+            return Optional
+                    .ofNullable(dynamoDb.deleteItem(DeleteItemRequest.builder().tableName(tableName)
+                            .key(Collections.singletonMap(XREF, AttributeValue.builder().s(xref).build()))
+                            .conditionExpression("attribute_exists(xref)").returnValues(ReturnValue.ALL_OLD).build()))
+                    .map(DeleteItemResponse::attributes).map(this::convert)
                     .orElseThrow(() -> new IllegalStateException("Condition passed but deleted item was null"));
         } catch (ConditionalCheckFailedException e) {
             throw new UnableToDeleteException("A competing request changed the bet while processing this request");
         } catch (ResourceNotFoundException e) {
-            throw new TableDoesNotExistException("Bet table " + tableName + " does not exist and was deleted after reading the bet");
+            throw new TableDoesNotExistException(
+                    "Bet table " + tableName + " does not exist and was deleted after reading the bet");
         }
     }
 
     /**
      * Creates an bet.
-     * @param BetRequest details of bet to create
+     * 
+     * @param betRequest details of bet to create
      * @return created bet
      */
     public Bet createBet(final BetRequest betRequest) {
@@ -264,11 +255,8 @@ public class BetDao {
         while (tries < 3) {
             try {
                 Map<String, AttributeValue> item = createBetItem(betRequest);
-                dynamoDb.putItem(PutItemRequest.builder()
-                        .tableName(tableName)
-                        .item(item)
-                        .conditionExpression("attribute_not_exists(xref)")
-                        .build());
+                dynamoDb.putItem(PutItemRequest.builder().tableName(tableName).item(item)
+                        .conditionExpression("attribute_not_exists(xref)").build());
                 return convert(item);
             } catch (ConditionalCheckFailedException e) {
                 tries++;
@@ -283,4 +271,3 @@ public class BetDao {
         return string == null || string.isEmpty();
     }
 }
-

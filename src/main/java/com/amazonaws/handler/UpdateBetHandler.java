@@ -6,7 +6,7 @@ import com.amazonaws.dao.BetDao;
 import com.amazonaws.exception.TableDoesNotExistException;
 import com.amazonaws.exception.UnableToUpdateException;
 import com.amazonaws.model.Bet;
-import com.amazonaws.model.request.UpdateBetRequest;
+import com.amazonaws.model.request.BetRequest;
 import com.amazonaws.model.response.ErrorMessage;
 import com.amazonaws.model.response.GatewayResponse;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -48,14 +48,14 @@ public class UpdateBetHandler implements BetRequestStreamHandler {
             return;
         }
         final JsonNode pathParameterMap = event.findValue("pathParameters");
-        final String betId = Optional.ofNullable(pathParameterMap)
-                .map(mapNode -> mapNode.get("bet_id"))
+        final String betXref = Optional.ofNullable(pathParameterMap)
+                .map(mapNode -> mapNode.get("betXref"))
                 .map(JsonNode::asText)
                 .orElse(null);
-        if (isNullOrEmpty(betId)) {
+        if (isNullOrEmpty(betXref)) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
-                            objectMapper.writeValueAsString(BET_ID_WAS_NOT_SET),
+                            objectMapper.writeValueAsString(BET_XREF_WAS_NOT_SET),
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
@@ -71,10 +71,10 @@ public class UpdateBetHandler implements BetRequestStreamHandler {
             return;
         }
 
-        final UpdateBetRequest request;
+        final BetRequest request;
         try {
             request = objectMapper.readValue(
-                    updateBetRequestBody.asText(), UpdateBetRequest.class);
+                    updateBetRequestBody.asText(), BetRequest.class);
         } catch (JsonParseException | JsonMappingException e) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
@@ -84,7 +84,6 @@ public class UpdateBetHandler implements BetRequestStreamHandler {
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
-
         if (request == null) {
             objectMapper.writeValue(output,
                     new GatewayResponse<>(
@@ -92,15 +91,8 @@ public class UpdateBetHandler implements BetRequestStreamHandler {
                             APPLICATION_JSON, SC_BAD_REQUEST));
             return;
         }
-
         try {
-            Bet updatedBet = betDao.updateBet(
-                    Bet.builder().betId(betId)
-                            .creatorId(request.getCreatorId())
-                            .version(request.getVersion())
-                            .preTaxAmount(request.getPreTaxAmount())
-                            .postTaxAmount(request.getPostTaxAmount())
-                            .build());
+            Bet updatedBet = betDao.updateBet(request);
             objectMapper.writeValue(output, new GatewayResponse<>(
                     objectMapper.writeValueAsString(updatedBet),
                     APPLICATION_JSON, SC_OK));
