@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+
+  hi_low_db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=hilow
+      - POSTGRES_PASSWORD=hilow
+      - POSTGRES_DB=hilow
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
