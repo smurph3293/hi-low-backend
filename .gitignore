@@ -29,3 +29,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### sam ###
+**/.aws-sam/**
+output.yaml

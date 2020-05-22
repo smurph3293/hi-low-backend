@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Bet API written with SpringBoot with the aws-serverless-java-container library
+
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+
+Resources:
+  BetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: com.hilow.hilowbackend.StreamLambdaHandler::handleRequest
+      Runtime: java11
+      CodeUri: target/hi-low-backend-0.0.1-SNAPSHOT-lambda-package.zip
+      MemorySize: 512
+      Policies: AWSLambdaBasicExecutionRole
+      Timeout: 30
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+
+Outputs:
+  SpringBootBetApi:
+    Description: URL for application
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/bets'
+    Export:
+      Name: SpringBootBetApi
