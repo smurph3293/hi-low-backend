@@ -7,13 +7,11 @@ import com.hilow.hilowbackend.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@EnableWebMvc
 public class CommentController {
 
     @Autowired

@@ -2,9 +2,20 @@ package com.hilow.hilowbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.UUID;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "comments")
 public class Comment extends AuditModel {
@@ -17,6 +28,9 @@ public class Comment extends AuditModel {
     )
     private Long id;
 
+    @Column(nullable = false)
+    private String xref = UUID.randomUUID().toString(); // external reference
+
     @Column(columnDefinition = "text")
     private String text;
 
@@ -25,30 +39,4 @@ public class Comment extends AuditModel {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Bet bet;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Bet getBet() {
-        return bet;
-    }
-
-    public void setBet(Bet bet) {
-        this.bet = bet;
-    }
-
-    // Getters and Setters (Omitted for brevity)
 }
